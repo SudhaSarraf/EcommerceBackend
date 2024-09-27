@@ -54,7 +54,7 @@ export class UsersController {
   async updatePassword(
     @Body() updatePasswordDto: UpdatePasswordDto, @Req() req:any
   ) {
-    const id = req.user.id;
+    const id = req.user.userId;
     return await this.usersService.updatePassword(id, updatePasswordDto);
   }
 

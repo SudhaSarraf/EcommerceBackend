@@ -59,6 +59,7 @@ export class PurchaseEntryService {
             unitId,
             categoryId,
             brandId,
+            status: true,
             createdDate: new Date(),
           });
 
@@ -108,174 +109,6 @@ export class PurchaseEntryService {
         return fullPurchaseEntry;
       });
     }
-
-  // async create(
-  //   createProductPurchaseEntryDto: CreateProductPurchaseEntryDto,) {
-  //   try {
-  //     let entryData = new PurchaseEntryMasterEntity(
-  //       createProductPurchaseEntryDto,
-  //     );
-  //     return await this.entityManager.transaction(async (eManager) => {
-  //       // let exsistingYear = await eManager.findOne(FiscalYearEntity, {
-  //       //   where: {
-  //       //     isActive: true,
-  //       //   },
-  //       //   select: {
-  //       //     id: true,
-  //       //     yearCode: true,
-  //       //   },
-  //       // });
-
-  //       // if (exsistingYear === null)
-  //       //   throw new InternalServerErrorException(
-  //       //     'Error getting fiscal year data. Contact support.',
-  //       //   );
-
-  //       let latestBillData = await eManager.find(PurchaseEntryMasterEntity, {
-  //         select: {
-  //           billNo: true,
-  //         },
-  //         order: {
-  //           billNo: 'DESC',
-  //         },
-  //       });
-
-  //       let uptoBillNo = !latestBillData[0] ? 0 : latestBillData[0].billNo;
-  //       let latestBillNo =
-  //         latestBillData.length > 0
-  //           ? latestBillData[0].billNo
-  //           : uptoBillNo
-  //             ? uptoBillNo
-  //             : 0; //latestBillData ? uptoBillNo || 0 : 0;
-  //       let newBillNo = latestBillNo + 1;
-
-  //       if (!newBillNo || newBillNo === 0)
-  //         throw new InternalServerErrorException(
-  //           'Technical error at bill generation. Contact support.',
-  //         );
-
-  //       let savedMasterData = await eManager.insert(PurchaseEntryMasterEntity, {
-  //         billNo: newBillNo,
-  //         voucherNo: ('Bill:- 0' + newBillNo).toString(),
-  //         date: new Date(entryData.date),
-  //         miti: entryData.miti,
-  //         partyName: entryData.partyName ? entryData.partyName : 'CASH A/C',
-  //         address: entryData.address ? entryData.address : null,
-  //         refBill: entryData.refBill ? entryData.refBill : null,
-  //         puchaseOrderNo: null,
-  //         PO_refBill: null,
-  //         total: entryData.total,
-  //         discPc: entryData.discPc,
-  //         discAmt: entryData.discAmt,
-  //         subTotal: entryData.subTotal,
-  //         tax: entryData.tax,
-  //         taxAmount: entryData.taxAmount,
-  //         netTotal: entryData.netTotal,
-  //         inWords: entryData.inWords,
-  //         transectionOn: entryData.transectionOn,
-  //         PO_status: entryData.PO_status ? entryData.PO_status : null,
-  //         isActive: true,
-  //         enteredBy: entryData.enteredBy,
-  //         updatedTimes: 0,
-  //       });
-
-  //       let masterId = savedMasterData.identifiers[0].id;
-
-  //       const masterData = await eManager.findOne(PurchaseEntryMasterEntity, {
-  //         where: {
-  //           id: masterId,
-  //         },
-  //         select: {
-  //           id: true,
-  //           billNo: true,
-  //           voucherNo: true,
-  //           updatedTimes: true,
-  //         },
-  //       });
-
-  //       let billDetailsArray: {
-  //         masterId: number;
-  //         billId: number;
-  //         voucherNo: string;
-  //         productId: number;
-  //         categoryId: number;
-  //         quantity: number;
-  //         unitId: number;
-  //         brandId: number;
-  //         pricePerUnit: number;
-  //         totalPrice: number;
-  //         status: boolean;
-  //         updatedTimes: number;
-  //         activeData: boolean;
-  //       }[] = [];
-  //       let inventoryQuantityArray = [];
-  //       let inventoryIdsToUpdate = [];
-
-  //       for ( let i = 0; i < createProductPurchaseEntryDto.purchaseEntryDetails.length; i++) {
-  //         billDetailsArray.push({
-  //           masterId: masterData.id,
-  //           billId: masterData.billNo,
-  //           voucherNo: masterData.voucherNo,
-  //           productId: createProductPurchaseEntryDto.purchaseEntryDetails[i].productId,
-  //           categoryId: createProductPurchaseEntryDto.purchaseEntryDetails[i].categoryId,
-  //           quantity: createProductPurchaseEntryDto.purchaseEntryDetails[i].quantity,
-  //           unitId: createProductPurchaseEntryDto.purchaseEntryDetails[i].unitId,
-  //           brandId: createProductPurchaseEntryDto.purchaseEntryDetails[i].brandId,  
-  //           pricePerUnit: createProductPurchaseEntryDto.purchaseEntryDetails[i].pricePerUnit,
-  //           totalPrice: createProductPurchaseEntryDto.purchaseEntryDetails[i].totalPrice,
-  //           status: true,
-  //           updatedTimes: masterData.updatedTimes,
-  //           activeData: true,
-  //         });
-
-  //         inventoryIdsToUpdate.push(
-  //           createProductPurchaseEntryDto.purchaseEntryDetails[i].productId,
-  //         );
-  //         inventoryQuantityArray.push({
-  //           quantity:
-  //             createProductPurchaseEntryDto.purchaseEntryDetails[i].quantity, //error here
-  //         });
-  //       }
-
-  //       if (masterData.billNo === 0)
-  //         throw new InternalServerErrorException(
-  //           'Technical error at bill generation. Contact support.',
-  //         );
-
-  //       //here new value is being inserted to details
-  //       const detailsResult = await eManager.insert(
-  //         PurchaseEntryDetailEntity,
-  //         billDetailsArray,
-  //       );
-  //       if (detailsResult.identifiers[0].id < 0)
-  //         throw new InternalServerErrorException(
-  //           'Failed product details creation.',
-  //         );
-
-  //       //#region where inventory is being updated by incrementing with purchased quantity in inventry update
-  //       const inventoryIncrements = await Promise.all(
-  //         inventoryIdsToUpdate.map(async (productId, index) => {
-  //           await eManager.increment(
-  //             InventoryEntity,
-  //             { productId: productId },
-  //             'quantity',
-  //             inventoryQuantityArray[index].quantity,
-  //           );
-  //         }),
-  //       );
-  //       //#end region
-
-  //       if (inventoryIncrements.length === detailsResult.generatedMaps.length)
-  //         return { message: 'Purchase entry done.' };
-  //       else
-  //         throw new InternalServerErrorException(
-  //           'Failed to save bill/details!!',
-  //         );
-  //     });
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 
   async findAllPurchaseMaster(companyId: number) {
     const purchaseEntryData = await this.entityManager.find(
@@ -642,5 +475,13 @@ export class PurchaseEntryService {
       catch (error) {
         throw error
       }
+    }
+
+    public async countAllPurchase(companyId: number) {
+      return await this.entityManager.count(PurchaseEntryDetailEntity, {
+        where: {
+          status: true,
+        },
+      });
     }
 }

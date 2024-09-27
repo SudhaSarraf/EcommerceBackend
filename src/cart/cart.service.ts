@@ -105,7 +105,10 @@ export class CartService {
           productName: true,
           sellingPrice: true,
           offerPrice: true,
-          images: true
+          images: true,
+          categoryId: true,
+          unitId: true,
+          brandId: true
         }
       },
       relations: ['user', 'product'],
@@ -132,7 +135,10 @@ export class CartService {
           productName: true,
           sellingPrice: true,
           offerPrice: true,
-          images: true
+          images: true,
+          categoryId: true,
+          unitId: true,
+          brandId: true
         },
       },
       relations: ['product'],
@@ -251,6 +257,15 @@ export class CartService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public async countAllCart(userId: number, companyId: number) {
+    return await this.entityManager.count(CartEntity, {
+      where: {
+        userId: userId,
+        companyId: companyId,
+      },
+    });
   }
 
   remove(id: number) {

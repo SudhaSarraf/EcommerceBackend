@@ -24,42 +24,11 @@ export class CreateProductIssueDto {
   @IsString()
   fiscalYear: string;
 
-  companyId: number
-
-  @IsArray()
-  @ValidateNested({ each: false })
-  @Type(() => SalerDataDto)
-  salerData: SalerDataDto[];
-}
-
-export class SalerDataDto extends PartialType(CreateProductIssueDto) {
+  @IsNumber()
+  discPc: number
 
   @IsNumber()
-  companyId: number;
-
-  @IsNumber()
-  total: number;
-
-  @IsNumber()
-  discPc: number;
-
-  @IsNumber()
-  discAmt: number;
-
-  @IsNumber()
-  subTotal: number;
-
-  @IsNumber()
-  tax: number;
-
-  @IsNumber()
-  taxAmount: number;
-
-  @IsNumber()
-  netTotal: number;
-
-  @IsString()
-  inWords: string;
+  tax: number
 
   @IsEnum(PaymentOption)
   paymentOption: PaymentOption;
@@ -71,12 +40,16 @@ export class SalerDataDto extends PartialType(CreateProductIssueDto) {
   @ValidateNested({ each: false })
   @Type(() => ProductDto)
   products: ProductDto[];
+
 }
 
-export class ProductDto extends PartialType(SalerDataDto) {
+export class ProductDto extends PartialType(CreateProductIssueDto) {
 
   @IsNumber()
   productId: number;
+
+  // @IsString()
+  productName: string;
 
   @IsNumber()
   categoryId: number;
@@ -84,16 +57,16 @@ export class ProductDto extends PartialType(SalerDataDto) {
   @IsNumber()
   brandId: number;
 
-  @IsDecimal({ decimal_digits: '4' })
+  @IsDecimal()
   quantity: number;
 
   @IsNumber()
   unitId: number;
 
-  @IsDecimal({ decimal_digits: '4' })
+  @IsDecimal()
   pricePerUnit: number;
 
-  @IsDecimal({ decimal_digits: '4' })
+  @IsDecimal()
   totalPrice: number;
 
   @IsBoolean()
@@ -101,13 +74,137 @@ export class ProductDto extends PartialType(SalerDataDto) {
 
   @IsNumber()
   updatedTimes: number;
+
+  @IsNumber() // this is salers company id
+  companyId: number
 }
 
 
+export class UpdateProductIssueDto {
 
-// import { IsArray, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+  @IsInt()
+  userId: number;
 
-// export class CreateProductIssueDetailDto {
+  @IsDate()
+  @Type(() => Date)
+  date: Date;
+
+  @IsString()
+  miti: string;
+
+  @IsString()
+  billingAddress: string;
+
+  @IsString()
+  note: string;
+
+  @IsString()
+  fiscalYear: string;
+
+  @IsNumber()
+  discPc: number
+
+  @IsNumber()
+  tax: number
+
+  @IsEnum(PaymentOption)
+  paymentOption: PaymentOption;
+
+  @IsEnum(OrderStatus)
+  orderStatus: OrderStatus;
+
+  @IsArray()
+  @ValidateNested({ each: false })
+  @Type(() => ProductDto)
+  products: ProductDto[];
+
+}
+
+export class SearchDto {
+
+  @IsNumber() // this is salers company id
+  companyId: number
+
+  @IsEnum(PaymentOption)
+  paymentOption: PaymentOption;
+
+  @IsEnum(OrderStatus)
+  orderStatus: OrderStatus;
+}
+
+
+// export class CreateProductIssueDto {
+
+//   @IsInt()
+//   userId: number;
+
+//   @IsDate()
+//   @Type(() => Date)
+//   date: Date;
+
+//   @IsString()
+//   miti: string;
+
+//   @IsString()
+//   billingAddress: string;
+
+//   @IsString()
+//   note: string;
+
+//   @IsString()
+//   fiscalYear: string;
+
+//   companyId: number
+
+//   @IsArray()
+//   @ValidateNested({ each: false })
+//   @Type(() => SalerDataDto)
+//   salerData: SalerDataDto[];
+// }
+
+// export class SalerDataDto extends PartialType(CreateProductIssueDto) {
+
+//   @IsNumber()
+//   companyId: number;
+
+//   @IsNumber()
+//   total: number;
+
+//   @IsNumber()
+//   discPc: number;
+
+//   @IsNumber()
+//   discAmt: number;
+
+//   @IsNumber()
+//   subTotal: number;
+
+//   @IsNumber()
+//   tax: number;
+
+//   @IsNumber()
+//   taxAmount: number;
+
+//   @IsNumber()
+//   netTotal: number;
+
+//   @IsString()
+//   inWords: string;
+
+//   @IsEnum(PaymentOption)
+//   paymentOption: PaymentOption;
+
+//   @IsEnum(OrderStatus)
+//   orderStatus: OrderStatus;
+
+//   @IsArray()
+//   @ValidateNested({ each: false })
+//   @Type(() => ProductDto)
+//   products: ProductDto[];
+// }
+
+// export class ProductDto extends PartialType(SalerDataDto) {
+
 //   @IsNumber()
 //   productId: number;
 
@@ -115,32 +212,23 @@ export class ProductDto extends PartialType(SalerDataDto) {
 //   categoryId: number;
 
 //   @IsNumber()
+//   brandId: number;
+
+//   @IsDecimal({ decimal_digits: '4' })
 //   quantity: number;
 
 //   @IsNumber()
 //   unitId: number;
+
+//   @IsDecimal({ decimal_digits: '4' })
+//   pricePerUnit: number;
+
+//   @IsDecimal({ decimal_digits: '4' })
+//   totalPrice: number;
+
+//   @IsBoolean()
+//   status: boolean;
+
+//   @IsNumber()
+//   updatedTimes: number;
 // }
-
-// export class CreateProductIssueDto {
-//   @IsDateString()
-//   date: string;
-
-//   @IsString()
-//   miti: string;
-
-//   issuedByUser: number;
-
-//   companyId: number;
-
-//   @IsString()
-//   enteredBy: string;
-
-//   @IsString()
-//   @IsOptional()
-//   note?: string;
-
-//   @IsArray()
-//   @IsNotEmpty()
-//   productIssueDetails: CreateProductIssueDetailDto[];
-// }
-

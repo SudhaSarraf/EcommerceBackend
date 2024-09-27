@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -20,15 +21,19 @@ import { Request } from 'express';
 import { Roles } from 'src/guards/role.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
 import { AtGuard } from 'src/guards/at.guard';
+import { JwtService } from '@nestjs/jwt';
+import { RoleEntity } from '../role/entities/role.entity';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService,
+              private readonly jwtService: JwtService) {
+  }
 
   @UseGuards(AtGuard)
+  // @Roles('admin')
   @UseGuards(RoleGuard)
-  @Roles('admin')
-  @Post('create')
+  @Post('create')   
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FilesInterceptor('images'))
   create(
@@ -37,7 +42,14 @@ export class ProductController {
     @Req() req: Request,
   ) {
     const companyId: number = req.user.companyId;
-    const creatorId: number = 4;
+    const creatorId: number = req.user.userId;
+    const roles = req.user.roles;
+
+    if (!roles.some((r: RoleEntity) => r.name === 'admin')) {
+      throw new ForbiddenException('only admin can access this route');
+    }
+    console.log(companyId);
+    console.log(creatorId);
     return this.productService.create({
       ...createProductDto,
       companyId,
@@ -78,8 +90,7 @@ export class ProductController {
   }
 
   @UseGuards(AtGuard)
-  @UseGuards(RoleGuard)
-  @Roles('admin')
+  // @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FilesInterceptor('images'))
   @Patch('update/:id')
@@ -90,7 +101,13 @@ export class ProductController {
     @Req() req: Request,
   ) {
     const companyId: number = req.user.companyId;
-    const creatorId: number = 4;
+    // const creatorId: number = 4;
+    const creatorId: number = req.user.userId;
+    const roles = req.user.roles;
+
+    if (!roles.some((r: RoleEntity) => r.name === 'admin')) {
+      throw new ForbiddenException('only admin can access this route');
+    }
 
     return this.productService.update({
       ...updateProductDto,

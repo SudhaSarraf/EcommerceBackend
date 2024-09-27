@@ -71,6 +71,14 @@ export class CartController {
     });
   }
 
+  @UseGuards(AtGuard)
+  @Get('getAllCount')
+  async getAllUserCount(@Req() req:any) {
+    const companyId = req.user.companyId;
+    const userId = req.user.userId;
+    return await this.cartService.countAllCart(userId, companyId);
+  }
+
   
   @UseGuards(AtGuard)
   @Delete('remove/:id')

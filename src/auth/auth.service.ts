@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   Req,
   UnauthorizedException,
@@ -203,35 +204,39 @@ export class AuthService {
     companyId: number,
     fiscalYear: string,
   ) {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          email: email,
-          roles: roles,
-          companyId: companyId,
-          fiscalYear: fiscalYear,
-        },
-        {
-          secret: 'at-secret',
-          expiresIn: '15m',
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          email: email,
-          roles: roles,
-          companyId: companyId,
-          fiscalYear: fiscalYear,
-        },
-        {
-          secret: 'rt-secret',
-          expiresIn: '15d', // 1 day
-        },
-      ),
-    ]);
-    return { accessToken, refreshToken };
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwtService.signAsync(
+          {
+            sub: userId,
+            email: email,
+            roles: roles,
+            companyId: companyId,
+            fiscalYear: fiscalYear,
+          },
+          {
+            secret: 'at-secret',
+            expiresIn: '15m',
+          },
+        ),
+        this.jwtService.signAsync(
+          {
+            sub: userId,
+            email: email,
+            roles: roles,
+            companyId: companyId,
+            fiscalYear: fiscalYear,
+          },
+          {
+            secret: 'rt-secret',
+            expiresIn: '15d', // 1 day
+          },
+        ),
+      ]);
+      return { accessToken, refreshToken };
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   /**

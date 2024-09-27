@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, OneToMany, JoinColumn, } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, } from 'typeorm';
 import { SalesEntryDetailEntity } from './sales-entry-details.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { CompanyInfoEntity } from 'src/company-info/entities/company-info.entity';
@@ -15,9 +15,10 @@ export enum OrderStatus {
   placed = 'Placed',
   accepted = 'Accepted',
   onTheWay = 'On_The_Way',
-  reached = 'reached',
+  reached = 'Reached',
   outForDelivery = 'Out_For_Delivery',
-  delivered = 'Delivered'
+  delivered = 'Delivered',
+  cancelled = 'Cancelled'
 }
 
 @Entity('sales_entry_master')
@@ -48,7 +49,41 @@ export class SalesEntryMasterEntity extends AbstractEntity<SalesEntryMasterEntit
   companyId: number;
 
   @Column({ type: 'int', nullable: true })
-  placedBy: string;
+  placedBy: number;
+
+  @Column({ type: 'int', nullable: true })
+  acceptedBy: number;
+
+  @Column({ type: 'int', nullable: true })
+  onTheWayBy: number;
+
+  @Column({ type: 'int', nullable: true })
+  reachedBy: number;
+
+  @Column({ type: 'int', nullable: true })
+  outForDeliveryBy: number;
+
+  @Column({ type: 'int', nullable: true })
+  deliveredBy: number;
+
+  @Column({ type: 'datetime' })
+  issuedOnDate?: Date;
+
+  @Column({ type: 'datetime' })
+  acceptedByUserOnDate?: Date;
+
+  @Column({ type: 'datetime' })
+  onTheWayByUserOnDate?: Date;
+
+  @Column({ type: 'datetime' })
+  reachedByUserOnDate?: Date;
+
+  @Column({ type: 'datetime' })
+  outForDeliveryByUserOnDate?: Date;
+
+  @Column({ type: 'datetime' })
+  deliveredByUserOnDate?: Date;
+
 
   @Column('decimal', { precision: 10, scale: 2 })
   total: number;
@@ -90,8 +125,28 @@ export class SalesEntryMasterEntity extends AbstractEntity<SalesEntryMasterEntit
   salesDetails: SalesEntryDetailEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.salesEntry)
-  @JoinColumn({ name: 'customerId' })
+  @JoinColumn({ name: 'userId' })
   issuedBy: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.acceptedBysalesEntry)
+  @JoinColumn({ name: 'acceptedBy' })
+  acceptedByUser: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.onTheWayBysalesEntry)
+  @JoinColumn({ name: 'onTheWayBy' })
+  onTheWayByUser: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.reachedBysalesEntry)
+  @JoinColumn({ name: 'reachedBy' })
+  reachedByUser: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.outForDeliveryBysalesEntry)
+  @JoinColumn({ name: 'outForDeliveryBy' })
+  outForDeliveryByUser: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.deliveredBysalesEntry)
+  @JoinColumn({ name: 'deliveredBy' })
+  deliveredByUser: UserEntity;
 
   @ManyToOne(() => CompanyInfoEntity, (company) => company.salesEntry)
   @JoinColumn({ name: 'companyId' })

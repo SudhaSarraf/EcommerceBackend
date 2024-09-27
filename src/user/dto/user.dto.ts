@@ -27,7 +27,23 @@ export class SignUpUserDto {
 
   @IsString()
   @IsOptional()
-  address?: string;
+  houseNoAreaStreet?: string;
+
+  @IsString()
+  @IsOptional()
+  landmark?: string;
+
+  @IsString()
+  @IsOptional()
+  state?: string;
+
+  @IsString()
+  @IsOptional()
+  cityTown?: string;
+
+  @Type(() => Number)
+  @IsOptional()
+  pinCode?: number;
 
   @IsBoolean()
   @Transform(({ value }) => value === 'true')

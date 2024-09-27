@@ -58,4 +58,12 @@ export class PurchaseEntryController {
   ) {
     return this.purchaseEntryService.update(+id, purchase);
   }
+
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles('admin')
+  @Get('getAllCount')
+  async getAllPurchaseCount(@Req() req:any) {
+    const companyId = 1
+    return await this.purchaseEntryService.countAllPurchase(companyId);
+  }
 }

@@ -23,7 +23,7 @@ export class CreateProductDto {
 
   @Type(() => Number)
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   purchasePrice: number;
 
   @IsString()

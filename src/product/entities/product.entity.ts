@@ -43,7 +43,7 @@ export class ProductEntity extends AbstractEntity<ProductEntity> {
   @Column({ nullable: true, type: 'text' })
   productDescription: string;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', {nullable: true, precision: 10, scale: 2 })
   purchasePrice: number;
 
   @Column('decimal', { precision: 10, scale: 2 })

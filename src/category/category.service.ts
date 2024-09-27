@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto} from './dto/category.dto';
-import { EntityManager } from 'typeorm';
+import { EntityManager, QueryFailedError } from 'typeorm';
 import { CategoryEntity } from './entities/category.entity';
 import { error } from 'console';
 
@@ -9,10 +9,24 @@ export class CategoryService {
   constructor(private readonly entityManager: EntityManager) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const categoryEntity = new CategoryEntity(createCategoryDto);
-    categoryEntity.status = true;
-    const result = await this.entityManager.save(categoryEntity );
-    return result;
+    try {
+      const categoryEntity = new CategoryEntity(createCategoryDto);
+      categoryEntity.status = true;
+      const result = await this.entityManager.save(categoryEntity );
+      return result;
+    } catch (error) {
+      console.log('error', error);
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('Duplicate entry')
+      ) {
+        throw new ConflictException(
+          'Duplicate entry detected: ' + error.message,
+        );
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }      
+    }
   }
 
   async findAll(companyId: number) {

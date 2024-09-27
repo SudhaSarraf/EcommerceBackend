@@ -59,7 +59,7 @@ export class PurchaseEntryDetailEntity extends AbstractEntity<PurchaseEntryDetai
   @UpdateDateColumn()
   updatedDate: Date;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean' , default: true})
   status: boolean;
 
   @Column({ type: 'int' })

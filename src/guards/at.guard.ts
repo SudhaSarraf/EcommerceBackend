@@ -2,6 +2,7 @@ import { ExecutionContext, Inject, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
+import { AtStrategy } from '../auth/strategy/at.strategy';
 
 @Injectable()
 export class AtGuard extends AuthGuard('jwt') {

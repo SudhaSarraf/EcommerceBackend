@@ -14,7 +14,8 @@ import { FilesService } from 'src/files/files.service';
 export class UserService {
   constructor(
     private readonly entityManager: EntityManager,
-    private readonly filesService:FilesService) {}
+    private readonly filesService: FilesService,
+  ) {}
 
   async create(userData: Partial<UserEntity>) {
     return await this.entityManager.save(UserEntity, userData);
@@ -24,21 +25,25 @@ export class UserService {
     const users = await this.entityManager.find(UserEntity, {
       select: {
         active: true,
-        userId:true,
+        userId: true,
         firstName: true,
-        lastName:true,
+        lastName: true,
         email: true,
         phone: true,
-        address: true,
+        houseNoAreaStreet: true,
+        landmark: true,
+        state: true,
+        cityTown: true,
+        pinCode: true,
         roles: true,
-        image: true
+        image: true,
       },
       relations: ['roles'],
     });
-    if(users) {
+    if (users) {
       // if a user were not found, we want to strip password and hashedRt from resulting users array
       const foundUsers = users.map((u) => {
-        const {password, hashedRt, ...rest } = u;
+        const { password, hashedRt, ...rest } = u;
         return rest;
       });
       return foundUsers;
@@ -49,21 +54,25 @@ export class UserService {
   async findOne(id: number) {
     return await this.entityManager.findOne(UserEntity, {
       where: {
-        userId: id
+        userId: id,
       },
       select: {
         active: true,
-        userId:true,
+        userId: true,
         firstName: true,
-        lastName:true,
+        lastName: true,
         email: true,
         phone: true,
-        address: true,
+        houseNoAreaStreet: true,
+        landmark: true,
+        state: true,
+        cityTown: true,
+        pinCode: true,
         roles: true,
-        image: true
+        image: true,
       },
       relations: {
-        roles: true
+        roles: true,
       },
     });
   }
@@ -76,8 +85,11 @@ export class UserService {
       throw new HttpException('user with given userId not found', 400);
 
     if (userData.image && foundUser.image)
-      imageName = await this.filesService.processFile(userData.image, foundUser.image);
-    else if(userData.image){
+      imageName = await this.filesService.processFile(
+        userData.image,
+        foundUser.image,
+      );
+    else if (userData.image) {
       imageName = await this.filesService.processFile(userData.image);
     }
 
@@ -91,6 +103,11 @@ export class UserService {
         image: updateEntity.image || foundUser.image,
         email: updateEntity.email,
         phone: updateEntity.phone,
+        houseNoAreaStreet: updateEntity.houseNoAreaStreet,
+        landmark: updateEntity.landmark,
+        state: updateEntity.state,
+        cityTown: updateEntity.cityTown,
+        pinCode: updateEntity.pinCode,
       });
     } else throw new InternalServerErrorException('Error while updating user.');
 
@@ -187,8 +204,6 @@ export class UserService {
       relations: { roles: true },
     });
   }
-
-  
 
   async remove(id: number) {
     return await this.entityManager.softRemove(UserEntity, { userId: id });

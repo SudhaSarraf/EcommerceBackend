@@ -25,6 +25,7 @@ async function bootstrap() {
         'http://192.168.1.219:3000',
         'http://192.168.1.72:3045',
         'https://giftsgarden.lennobyte.com',
+        'https://rc-epay.esewa.com.np/api/epay/main/v2/form',
         'https://ecomm.admin.lennobyte.com',
         'https://ecomm.api.lennobyte.com', 
       ],

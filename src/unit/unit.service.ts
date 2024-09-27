@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUnitDto, UpdateUnitDto } from './dto/unit.dto';
-import { EntityManager } from 'typeorm';
+import { EntityManager, QueryFailedError } from 'typeorm';
 import { UnitEntity } from './entities/unit.entity';
 import { error } from 'console';
 
@@ -9,10 +9,24 @@ export class UnitService {
   constructor(private readonly entityManager: EntityManager) {}
 
   async create(createunitDto: CreateUnitDto) {
-    const unitEntity = new UnitEntity(createunitDto);
-    unitEntity.status = true;
-    const result = await this.entityManager.save(UnitEntity, unitEntity);
-    return result;
+    try {
+      const unitEntity = new UnitEntity(createunitDto);
+      unitEntity.status = true;
+      const result = await this.entityManager.save(UnitEntity, unitEntity);
+      return result;
+    } catch (error) {
+      console.log('error', error);
+      if (
+        error instanceof QueryFailedError &&
+        error.message.includes('Duplicate entry')
+      ) {
+        throw new ConflictException(
+          'Duplicate entry detected: ' + error.message,
+        );
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }      
+    }
   }
 
   async findAll(companyId: number) {

@@ -29,7 +29,19 @@ export class UserEntity extends AbstractWithNoId<UserEntity> {
   phone?: string;
 
   @Column({ type: 'text', nullable: true, default: null })
-  address?: string;
+  houseNoAreaStreet?: string;
+
+  @Column({ type: 'text', nullable: true, default: null })
+  landmark?: string;
+
+  @Column({ type: 'text', nullable: true, default: null })
+  state?: string;
+
+  @Column({ type: 'text', nullable: true, default: null })
+  cityTown?: string;
+
+  @Column({ nullable: true, default: null })
+  pinCode?: number;
 
   @Column({ default: true })
   active: boolean;
@@ -117,6 +129,22 @@ export class UserEntity extends AbstractWithNoId<UserEntity> {
 
   @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.issuedBy)
   salesEntry: SalesEntryMasterEntity[];
+
+  @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.acceptedByUser)
+  acceptedBysalesEntry: SalesEntryMasterEntity[];
+
+  @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.onTheWayByUser)
+  onTheWayBysalesEntry: SalesEntryMasterEntity[];
+
+  @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.reachedByUser)
+  reachedBysalesEntry: SalesEntryMasterEntity[];
+
+  @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.outForDeliveryByUser)
+  outForDeliveryBysalesEntry: SalesEntryMasterEntity[];
+
+  @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.deliveredByUser)
+  deliveredBysalesEntry: SalesEntryMasterEntity[];
+
 
   @OneToMany(() => SalesEntryMasterEntity, (salesEntry) => salesEntry.salesplaced)
   salesplacedBy: SalesEntryMasterEntity[];

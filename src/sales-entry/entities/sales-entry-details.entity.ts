@@ -22,6 +22,9 @@ export class SalesEntryDetailEntity extends AbstractEntity<SalesEntryDetailEntit
   @Column({ type: 'int', nullable: false })
   productId: number;
 
+  // @Column({ type: 'text', nullable: true })
+  // productName: string
+
   @Column({ type: 'int', nullable: false })
   categoryId: number;
 
@@ -33,6 +36,9 @@ export class SalesEntryDetailEntity extends AbstractEntity<SalesEntryDetailEntit
 
   @Column({ type: 'int', nullable: false })
   unitId: number;
+
+  @Column({type: 'int', nullable: true})
+  companyId: number
 
   @Column({ type: 'decimal', precision: 10, scale: 4 })
   pricePerUnit: number;
